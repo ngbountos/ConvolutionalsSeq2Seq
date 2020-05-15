@@ -30,7 +30,6 @@ class Encoder(nn.Module):
         self.convolution_projection = nn.Linear(self.hidden_dim, self.embedding_dim)
 
     def forward(self, src):
-        src = src.permute(1,0)
         #src = [batch size, src len]
         batch_size = src.shape[0]
         src_len = src.shape[1]
@@ -96,7 +95,6 @@ class Decoder(nn.Module):
         self.fc_out = nn.Linear(self.embedding_dim, self.out_dim)
     def forward(self, target, embed_conv, encoder_output, previous_embedded_target):
         # src = [batch size, src len]
-        target = target.permute(1,0)
         batch_size = target.shape[0]
         target_len = target.shape[1]
         # create position tensor
@@ -149,7 +147,6 @@ class Decoder(nn.Module):
 
             # Residual block . Add input of each convolution.
             x = x + conv_embedding
-
 
             # Normalize
             x = x * self.scale
