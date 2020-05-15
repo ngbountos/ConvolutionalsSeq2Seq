@@ -116,8 +116,6 @@ class Decoder(nn.Module):
             x = layer(padded_conv_input)
             #Gate
             x = nn.functional.glu(x, dim=1)
-            #Residual block . Add input of each convolution.
-            x = x + conv_embedding
 
             #Multi-step Attention
 
