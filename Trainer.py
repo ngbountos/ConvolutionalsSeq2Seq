@@ -75,10 +75,11 @@ class Trainer:
         for i, batch in enumerate(self.train_iterator):
             src = batch.src
             trg = batch.trg
-
+            trg = trg.permute(1,0)
+            src = src.permute(1,0)
             self.optimizer.zero_grad()
 
-            output, _ = self.model(src, trg[:-1, :])
+            output, _ = self.model(src, trg[:, :-1])
 
             # output = [batch size, trg len - 1, output dim]
             # trg = [batch size, trg len]
@@ -86,7 +87,7 @@ class Trainer:
             output_dim = output.shape[-1]
 
             output = output.contiguous().view(-1, output_dim)
-            trg = trg[1:, :].contiguous().view(-1)
+            trg = trg[:, 1:].contiguous().view(-1)
 
             # output = [batch size * trg len - 1, output dim]
             # trg = [batch size * trg len - 1]
@@ -113,8 +114,9 @@ class Trainer:
             for i, batch in enumerate(iterator):
                 src = batch.src
                 trg = batch.trg
-
-                output, _ = self.model(src, trg[:-1, :])
+                src = src.permute(1,0)
+                trg = trg.permute(1,0)
+                output, _ = self.model(src, trg[:, :-1])
 
                 # output = [batch size, trg len - 1, output dim]
                 # trg = [batch size, trg len]
@@ -122,7 +124,7 @@ class Trainer:
                 output_dim = output.shape[-1]
 
                 output = output.contiguous().view(-1, output_dim)
-                trg = trg[1:, :].contiguous().view(-1)
+                trg = trg[:,1:].contiguous().view(-1)
 
                 # output = [batch size * trg len - 1, output dim]
                 # trg = [batch size * trg len - 1]
