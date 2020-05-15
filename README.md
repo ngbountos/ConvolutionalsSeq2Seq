@@ -5,4 +5,7 @@ PyTorch implementation of convolutional seq2seq  ( Convolutional Sequence to Seq
 ## Execution
 
 `python -m spacy download en`
+
 `python -m spacy download de`
+
+ `python run.py --batch_size=128`
