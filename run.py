@@ -38,19 +38,19 @@ if config.mode == 'train':
 
         if valid_loss < best_valid_loss:
             best_valid_loss = valid_loss
-            torch.save(trainer.model.state_dict(), 'tut1-model.pt')
+            torch.save(trainer.model.state_dict(), 'convseq.pt')
 
         print('Epoch: {} | Time: {}m {}s'.format(epoch, epoch_mins, epoch_secs))
-        print('Train Loss: {} | Train PPL: {}'.format(train_loss, math.exp(train_loss)))
-        print('Val. Loss: {} |  Val. PPL: {}'.format(valid_loss, math.exp(valid_loss)))
+        print('Train Loss: {} | Train PPL: {:f}'.format(train_loss, math.exp(train_loss)))
+        print('Val. Loss: {} |  Val. PPL: {:f}'.format(valid_loss, math.exp(valid_loss)))
 
 elif config.mode == 'test':
 
-    trainer.model.load_state_dict(torch.load('tut1-model.pt'))
+    trainer.model.load_state_dict(torch.load('convseq.pt'))
 
     test_loss = trainer.evaluate(trainer.test_iterator, criterion)
 
-    print('| Test Loss: {} | Test PPL: {} |'.format(test_loss, math.exp(test_loss)))
+    print('| Test Loss: {} | Test PPL: {:f} |'.format(test_loss, math.exp(test_loss)))
 
 else:
     sentence = 'I go there'
