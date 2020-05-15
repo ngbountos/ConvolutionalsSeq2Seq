@@ -9,3 +9,6 @@ PyTorch implementation of convolutional seq2seq  ( Convolutional Sequence to Seq
 `python -m spacy download de`
 
  `python run.py --batch_size=128`
+
+
+Test PPL : 25.8
