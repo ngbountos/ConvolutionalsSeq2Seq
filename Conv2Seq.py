@@ -93,6 +93,7 @@ class Decoder(nn.Module):
         self.convolution_projection = nn.Linear(self.hidden_dim, self.embedding_dim)
         self.attentionLinearcomb = nn.Linear(self.hidden_dim, self.hidden_dim)
         self.fc_out = nn.Linear(self.embedding_dim, self.out_dim)
+        self.previousCast = nn.Linear(self.out_dim, self.embedding_dim)
     def forward(self, target, embed_conv, encoder_output, previous_embedded_target):
         # src = [batch size, src len]
         batch_size = target.shape[0]
@@ -123,8 +124,6 @@ class Decoder(nn.Module):
             #d_l^i = W_d^l h_l^i + b_l^d + g_i
             #Score : d_l^i dot z_j^u where z_j^u the output of the last encoderblock u:
 
-            if previous_embedded_target is not None:
-                x = self.attentionLinearcomb(x) + previous_embedded_target
             #Dot product with every state of previous encoder block
 
             projected_encoder_conv = self.embedding_projection(embed_conv)
@@ -179,7 +178,10 @@ class Conv2Seq(nn.Module):
         self.encoder = Encoder(device = device, trg_pad_idx= target_pad_index, input_dimension = self.input_dim)
         self.decoder = Decoder(device = device, trg_pad_idx= target_pad_index, input_dimension= self.input_dim, out_dim= out_dim)
         self.previous_token = None
+
     def forward(self, src , trg):
         enc_conv_out, out = self.encoder(src )
+
         output, attention = self.decoder(trg, enc_conv_out, out, self.previous_token)
+
         return output, attention
