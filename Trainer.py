@@ -17,7 +17,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #Load Languages
 class Trainer:
-    def __init__(self, num_epochs= 10, batch_size = 16, lr = 0.1, num_layers = 2):
+    def __init__(self, num_epochs= 10, batch_size = 16, lr = 0.25, num_layers = 2):
         self.number_of_epochs = num_epochs
         self.clip = 1
         self.german = spacy.load("de")
