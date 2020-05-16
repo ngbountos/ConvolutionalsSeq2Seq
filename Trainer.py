@@ -17,9 +17,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #Load Languages
 class Trainer:
-    def __init__(self, num_epochs= 10, batch_size = 16, lr = 0.001, num_layers = 2):
+    def __init__(self, num_epochs= 10, batch_size = 16, lr = 0.1, num_layers = 2):
         self.number_of_epochs = num_epochs
-        self.clip = 0.1
+        self.clip = 1
         self.german = spacy.load("de")
         self.english = spacy.load('en')
 
@@ -28,12 +28,12 @@ class Trainer:
         self.src = Field(tokenize = self.util.tokenize_german,
                     init_token = '<sos>',
                     eos_token = '<eos>',
-                    lower = True)
+                    lower = True, batch_first=True)
 
         self.trg = Field(tokenize = self.util.tokenize_english,
                     init_token = '<sos>',
                     eos_token = '<eos>',
-                    lower = True)
+                    lower = True, batch_first=True)
 
         self.train_data, self.valid_data, self.test_data = Multi30k.splits(exts = ('.de', '.en'),
                                                             fields = (self.src, self.trg))
@@ -64,7 +64,7 @@ class Trainer:
 
         self.model = Conv2Seq.Conv2Seq(device,self.trg.vocab.stoi[self.trg.pad_token], input_dimension= len(self.src.vocab), out_dim = len(self.trg.vocab)).to(device)
 
-        self.optimizer = optim.Adam(self.model.parameters())
+        self.optimizer = optim.SGD(self.model.parameters(), lr = self.lr, momentum= 0.99)
 
 
     def train(self, criterion):
@@ -75,8 +75,6 @@ class Trainer:
         for i, batch in enumerate(self.train_iterator):
             src = batch.src
             trg = batch.trg
-            trg = trg.permute(1,0)
-            src = src.permute(1,0)
             self.optimizer.zero_grad()
 
             output, _ = self.model(src, trg[:, :-1])
@@ -114,8 +112,6 @@ class Trainer:
             for i, batch in enumerate(iterator):
                 src = batch.src
                 trg = batch.trg
-                src = src.permute(1,0)
-                trg = trg.permute(1,0)
                 output, _ = self.model(src, trg[:, :-1])
 
                 # output = [batch size, trg len - 1, output dim]

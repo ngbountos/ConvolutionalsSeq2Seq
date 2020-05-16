@@ -41,8 +41,8 @@ if config.mode == 'train':
             torch.save(trainer.model.state_dict(), 'convseq.pt')
 
         print('Epoch: {} | Time: {}m {}s'.format(epoch, epoch_mins, epoch_secs))
-        print('Train Loss: {:3f} | Train PPL: {:7.3f}'.format(train_loss, math.exp(train_loss)))
-        print('Val. Loss: {:3f} |  Val. PPL: {:7.3f}'.format(valid_loss, math.exp(valid_loss)))
+       	print('Train Loss: {:7.3f} | Train PPL: {:7.3f}'.format(train_loss, math.exp(train_loss)))
+     	print('Val. Loss: {:7.3f} |  Val. PPL: {:7.3f}'.format(valid_loss, math.exp(valid_loss)))
 
 elif config.mode == 'test':
 
@@ -50,7 +50,7 @@ elif config.mode == 'test':
 
     test_loss = trainer.evaluate(trainer.test_iterator, criterion)
 
-    print('| Test Loss: {:3f} | Test PPL: {:7.3f} |'.format(test_loss, math.exp(test_loss)))
+    print('| Test Loss: {:7.3f} | Test PPL: {:7.3f} |'.format(test_loss, math.exp(test_loss)))
 
 else:
     pass
